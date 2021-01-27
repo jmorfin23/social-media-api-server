@@ -1,14 +1,16 @@
 const express = require('express'); 
 const app = express(); 
-const bodyParser = require('body-parser'); 
+const cors = require('cors'); 
 const PORT = process.env.PORT || 5001; 
 
 
-app.use(bodyParser.json()); 
+app.use(cors()); 
 
-app.get('*', (req, res) => {
+app.get('/', (req, res) => {
     res.json("this is the api server, received request!");
 }); 
+
+app.use('/api', require('./routes.js')); 
 
 app.listen(PORT, () => console.log(`App listening on port ${PORT}`)); 
 
