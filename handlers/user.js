@@ -1,10 +1,11 @@
 const jwt = require('jsonwebtoken'); 
-const { validateLoginData } = require('../utility/validators');
+const { validateLoginData, validateRegisterData } = require('../utility/validators');
+const { v4: uuidv4 } = require('uuid');
 
 // Testing 
+// TODO: sequelize db 
 const data = {
     uid: "3kj41sl123lk123l4kj141", 
-    name: 'Billy', 
     email: 'user69@user.com', 
     handle: 'user69', 
     imageUrl: 'https://placehold.it/250x250', 
@@ -19,8 +20,12 @@ exports.login = (req, res) => {
         password: req.body.password
     }; 
 
-    validateLoginData(user); 
+    const { valid, errors } = validateLoginData(user); 
+
+    if (!valid) return res.status(400).json(errors); 
+
     // For testing TODO: set up db w/ sequelize 
+    
     if (user.email === data.email && user.password === data.password) {
 
          // Create token 
@@ -31,6 +36,35 @@ exports.login = (req, res) => {
 
         res.status(200).send(); 
     } else {
-        res.status(403).json({ error: "invalid username or password" }); 
+        res.status(403).json({ general: "invalid username or password" }); 
     }
+}; 
+
+
+exports.register = (req, res) => {
+    console.log('inside register route'); 
+
+    const newUser = {
+        email: req.body.email, 
+        handle: req.body.handle, 
+        password: req.body.password, 
+        confirmPassword: req.body.confirmPassword
+    }; 
+
+    const { valid, errors } = validateRegisterData(newUser);   
+
+    if (!valid) return res.status(400).json(errors); 
+
+    // Add to db 
+    // ... 
+
+    // Get token 
+    const token = jwt.sign({ uid: uuidv4() }, process.env.SECRET_KEY); 
+
+    console.log('register token: ' + token); 
+
+    res.cookie('auth', token, { maxAge: 604800000 , httpOnly: true, signed: true } )
+
+    // return cookie 
+    res.status(201).send()
 }; 

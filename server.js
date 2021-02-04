@@ -11,21 +11,14 @@ app.use(cors());
 app.use(cookieParser(process.env.SECRET_KEY)); 
 app.use(bodyParser.json()); 
 
-const { login } = require('./handlers/user'); 
+const { login, register } = require('./handlers/user'); 
 
 // User routes
 app.post('/login', login); 
+app.post('/register', register); 
 
+// Post routes 
 
-
-
-
-// // error handler middleware
-// app.use((error, req, res, next) => {
-//     console.log('error handler middleware'); 
-//     console.log(error); 
-//     // return json with an update back to update redux state. 
-// }); 
 
 app.listen(PORT, () => console.log(`App listening on port ${PORT}`)); 
 

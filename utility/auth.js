@@ -1,7 +1,6 @@
 const jwt = require('jsonwebtoken');
 
-// Check user cookie 
-// TODO: 
+// TODO: check cookie in req 
 module.exports = (req, res, next) => {
 
     console.log(req.signedCookies); 
