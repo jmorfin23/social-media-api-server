@@ -5,6 +5,7 @@ const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser'); 
 const PORT = process.env.PORT || 5001; 
 const jwt = require('jsonwebtoken'); 
+const db = require('./models'); 
 require('dotenv').config()
 
 app.use(cors()); 
@@ -19,7 +20,15 @@ app.post('/register', register);
 
 // Post routes 
 
+db.sequelize.authenticate().then(() => {
+    console.log('connection set up successful!')
+}).catch(err => {
+    console.error('Unable to connect to the database:', err);
+  });
 
-app.listen(PORT, () => console.log(`App listening on port ${PORT}`)); 
+db.sequelize.sync().then(() => {
+    app.listen(PORT, () => console.log(`App listening on port ${PORT}`)); 
+}); 
+
 
 
