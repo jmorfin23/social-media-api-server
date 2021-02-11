@@ -1,19 +1,12 @@
-const user = require('./user');
-const post = require('./post');
-const comment = require('./comment'); 
+'use strict';
+
 const fs = require('fs');
 const path = require('path');
 const Sequelize = require('sequelize');
 const basename = path.basename(__filename);
 const env = process.env.NODE_ENV || 'development';
 const config = require(__dirname + '/../config/config.json')[env];
-
-
-const db = {
-  User: user, 
-  Post: post, 
-  Comment: comment
-};
+const db = {};
 
 let sequelize;
 if (config.use_env_variable) {
@@ -34,6 +27,7 @@ fs
 
 Object.keys(db).forEach(modelName => {
   if (db[modelName].associate) {
+    console.log()
     db[modelName].associate(db);
   }
 });

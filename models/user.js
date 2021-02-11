@@ -1,4 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
+    
     const User = sequelize.define('user' , {
         id: {
             type: DataTypes.UUID, 
@@ -12,6 +13,7 @@ module.exports = (sequelize, DataTypes) => {
         handle: {
             type: DataTypes.STRING, 
             allowNull: false, 
+            unique: true
         }, 
         bio: {
             type: DataTypes.STRING, 
@@ -25,14 +27,14 @@ module.exports = (sequelize, DataTypes) => {
     User.associate = (models) => {
 
         // 1:M for User - Post relationship 
-        User.hasMany(models.Post), {
+        User.hasMany(models.post), {
             foreignKey: 'userId'
         };
 
         // 1:M for User - Comment Relationship 
-        User.hasMany(models.Comment, {
+        User.hasMany(models.comment, {
             foreignKey: 'userId'
         }); 
     };
-
-}
+    return User; 
+}; 

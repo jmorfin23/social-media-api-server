@@ -1,8 +1,9 @@
 const jwt = require('jsonwebtoken'); 
 const { validateLoginData, validateRegisterData } = require('../utility/validators');
-const { v4: uuidv4 } = require('uuid');
+const db = require('./models'); 
 
-// Testing 
+
+// Testing purposes
 // TODO: sequelize db 
 const data = {
     uid: "3kj41sl123lk123l4kj141", 
@@ -41,8 +42,7 @@ exports.login = (req, res) => {
 }; 
 
 
-exports.register = (req, res) => {
-    console.log('inside register route'); 
+exports.register = async(req, res) => {
 
     const newUser = {
         email: req.body.email, 
@@ -55,16 +55,13 @@ exports.register = (req, res) => {
 
     if (!valid) return res.status(400).json(errors); 
 
-    // Add to db 
+    // Add to db
+    // ... 
+    // Get token 
+    // ...
+
+    // attach cookie to response 
     // ... 
 
-    // Get token 
-    const token = jwt.sign({ uid: uuidv4() }, process.env.SECRET_KEY); 
-
-    console.log('register token: ' + token); 
-
-    res.cookie('auth', token, { maxAge: 604800000 , httpOnly: true, signed: true } )
-
-    // return cookie 
     res.status(201).send()
 }; 

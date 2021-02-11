@@ -4,9 +4,9 @@ const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser'); 
 const PORT = process.env.PORT || 5001; 
-const jwt = require('jsonwebtoken'); 
 const db = require('./models'); 
 require('dotenv').config()
+
 
 app.use(cors()); 
 app.use(cookieParser(process.env.SECRET_KEY)); 
@@ -18,16 +18,19 @@ const { login, register } = require('./handlers/user');
 app.post('/login', login); 
 app.post('/register', register); 
 
-// Post routes 
+// Sequelize testing: 
+app.post('/add_user', async(req, res) => {
 
-db.sequelize.authenticate().then(() => {
-    console.log('connection set up successful!')
-}).catch(err => {
-    console.error('Unable to connect to the database:', err);
-  });
+}); 
 
-db.sequelize.sync().then(() => {
-    app.listen(PORT, () => console.log(`App listening on port ${PORT}`)); 
+// TODO: Posts routes 
+
+// TODO: Comment routes 
+
+
+// Sequelize 
+db.sequelize.sync({}).then(() => {
+    app.listen(PORT, () => console.log(`App listening on port ${PORT}`));
 }); 
 
 
