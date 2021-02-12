@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken'); 
 const { validateLoginData, validateRegisterData } = require('../utility/validators');
-const db = require('./models'); 
-
+const db = require('../models'); 
+const bcrypt = require('bcrypt'); 
 
 // Testing purposes
 // TODO: sequelize db 
@@ -51,17 +51,31 @@ exports.register = async(req, res) => {
         confirmPassword: req.body.confirmPassword
     }; 
 
+    // Validate register data 
     const { valid, errors } = validateRegisterData(newUser);   
 
+    // Return errors if not valid 
     if (!valid) return res.status(400).json(errors); 
 
-    // Add to db
-    // ... 
-    // Get token 
-    // ...
+    // ___ ADDING NEW USER ___ // 
+    try {
 
-    // attach cookie to response 
-    // ... 
+        // Hash password 
+        const passwordHash = await bcrypt.hash(newUser.password, 10); 
 
-    res.status(201).send()
+        // Update db 
+        var new_user = await db.user.create({ email: newUser.email, handle: newUser.handle, password: passwordHash }); 
+
+    } catch(err) {
+        return res.status(500).json({ general: err.errors[0].message })
+    }
+
+    // Create token 
+    const token = jwt.sign({ uid: new_user.id}, process.env.SECRET_KEY); 
+
+    // add to cookie 
+    res.cookie('auth', token, { maxAge: 604800000 , httpOnly: true, signed: true } )
+
+    // send to client 
+    res.status(201).json(true)
 }; 
